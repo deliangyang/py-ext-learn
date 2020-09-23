@@ -48,6 +48,16 @@ static PyObject *test_object(PyObject *self, PyObject *args) {
     printf("%s\n", obj->ob_type->tp_doc);
     printf("%s\n", obj->ob_type->tp_name);
     printf("%ld\n", obj->ob_refcnt);
+
+    FILE *file = fopen("test.obj", "w");
+    int err = PyObject_Print(obj, file, Py_PRINT_RAW);
+    if (err == -1) {
+        printf("error: %d", err);
+        return NULL;
+    }
+
+    PyObject_CallMethod(obj, "a", NULL);
+
     return Py_BuildValue("O", obj);
 }
 

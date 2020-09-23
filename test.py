@@ -11,5 +11,8 @@ class Test:
     def __init__(self):
         print("aaaxxxxxx")
 
+    def a(self):
+        print("this is the function a")
+
 t = Test()
 print(testa.test_object(t))
