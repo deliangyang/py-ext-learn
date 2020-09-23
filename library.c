@@ -2,7 +2,15 @@
 
 #include <Python.h>
 
-static PyObject *test(PyObject *self, PyObject *args) {
+
+/**
+ * https://docs.python.org/3/c-api/arg.html
+ * PyArg_ParseTuple 参数类型
+ * @param self
+ * @param args
+ * @return
+ */
+static PyObject *add(PyObject *self, PyObject *args) {
     int a, b = 0;
     if (!PyArg_ParseTuple(args, "ii", &a, &b)) {
         return NULL;
@@ -18,9 +26,36 @@ static PyObject *sub(PyObject *self, PyObject *args) {
     return Py_BuildValue("i", a - b);
 }
 
+static PyObject *print(PyObject *self, PyObject *args) {
+    char *str;
+    if (!PyArg_ParseTuple(args, "s", &str)) {
+        return NULL;
+    }
+    print_str(str);
+    return Py_BuildValue("s", str);
+}
+
+void print_str(char *str) {
+    printf("%s\n", str);
+}
+
+static PyObject *test_object(PyObject *self, PyObject *args) {
+    PyObject *obj;
+    if (!PyArg_ParseTuple(args, "O", &obj)) {
+        return NULL;
+    }
+
+    printf("%s\n", obj->ob_type->tp_doc);
+    printf("%s\n", obj->ob_type->tp_name);
+    printf("%ld\n", obj->ob_refcnt);
+    return Py_BuildValue("O", obj);
+}
+
 static struct PyMethodDef TestMethods[] = {
-        {"test", test, METH_VARARGS, "ttttt"},
+        {"add", add, METH_VARARGS, "add"},
         {"sub",  sub,  METH_VARARGS, "sub a - b"},
+        {"print",  print,  METH_VARARGS, "print"},
+        {"test_object",  test_object,  METH_VARARGS, "test_object"},
         {NULL, NULL, 0, NULL}
 };
 
